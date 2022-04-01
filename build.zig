@@ -201,8 +201,7 @@ pub fn linkLibSoundio(b: *std.build.Builder, libExeObj: *std.build.LibExeObjStep
         std.fs.makeDirAbsolute(soundio_cache_path) catch @panic("Could not create soundio cache directory");
     };
     configureConfigHeader(b, soundio_cache_path, version);
-    libExeObj.addIncludePath(b.lib_dir);
-    libExeObj.addIncludePath(b.h_dir);
+    libExeObj.addIncludePath(std.fs.path.dirname(@src().file) orelse ".");
     libExeObj.addIncludePath(src_include_dir);
     libExeObj.addIncludePath(soundio_cache_path);
 }
