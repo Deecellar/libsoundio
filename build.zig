@@ -238,6 +238,7 @@ fn configureConfigHeader(b: *std.build.Builder, install_path: []const u8, curren
 /// Link dependencies for the library
 pub fn linkDependencies(libExeObj: *std.build.LibExeObjStep, target: std.zig.CrossTarget) void {
     if (target.isWindows()) {
+        //TODO: MSVC have dependencies here? 
         libExeObj.linkSystemLibrary("Threads");
         if (use_wasapi) {
             libExeObj.linkSystemLibrary("ole32");
@@ -301,9 +302,10 @@ fn formatMessage(b: *std.build.Builder, target: std.zig.CrossTarget, mode: std.b
 fn getFlags(mode: std.builtin.Mode, is_example: bool, is_test: bool) [][]const u8 {
     comptime var flags = [_][]const u8{ "-std=c11", "-fvisibility=hidden", "-Wall", "-Werror=strict-prototypes", "-Werror=old-style-definition", "-Werror=missing-prototypes", "-D_REENTRANT", "-D_POSIX_C_SOURCE=200809L", "-Wno-missing-braces" };
     if (mode == .Debug) {
-        comptime var flags_debug = flags ++ [_][]const u8{ "-pedantic", "--Werror" };
+        comptime var flags_debug = flags ++ [_][]const u8{ "-pedantic", "-Werror" };
         comptime var flags_example = flags_debug ++ [_][]const u8{ "-std=c99", "-Wall" };
-        comptime var flags_test = flags_debug ++ [_][]const u8{ "-fprofile-arcs", "-ftest-coverage"};
+            // TODO: See why this fails
+        comptime var flags_test = flags_debug ;// ++ [_][]const u8{ "-fprofile-arcs", "-ftest-coverage"};
         if (is_example) {
             return &flags_example;
         } else if (is_test) {
@@ -313,7 +315,8 @@ fn getFlags(mode: std.builtin.Mode, is_example: bool, is_test: bool) [][]const u
         }
     }
     comptime var flags_example = flags ++ [_][]const u8{ "-std=c99", "-Wall" };
-    comptime var flags_test = flags ++ [_][]const u8{ "-fprofile-arcs", "-ftest-coverage"};
+    // TODO: See why this fails
+    comptime var flags_test = flags ;// ++ [_][]const u8{ "-fprofile-arcs", "-ftest-coverage"};
     if (is_example) {
         return &flags_example;
     } else if (is_test) {
